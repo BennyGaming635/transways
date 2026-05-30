@@ -5,7 +5,8 @@ export default async function StopPage({
 }: {
   params: { id: string | string[] };
 }) {
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const resolvedParams = (await params) as { id: string | string[] };
+  const id = Array.isArray(resolvedParams.id) ? resolvedParams.id[0] : resolvedParams.id;
 
   if (!id) return <div>Stop not found</div>;
 
