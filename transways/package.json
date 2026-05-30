@@ -13,6 +13,10 @@
     "tsx": "^4.22.3"
   },
   "scripts": {
-    "import:stops": "tsx scripts/importStops.ts"
+    "import:stops": "tsx scripts/importStops.ts",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   }
 }
