@@ -1,0 +1,41 @@
+Adelaide Metro GTFS Release Notes
+
+General Amendments:
+
+1)	Implemented AOX data for AFL Round 13 (there is no Round 12 in Adelaide)
+
+2)	The following stop coordinates have been updated.
+
+Stop 78 Blair Park Dr - West side
+Stop 82 Osprey Dr South West side
+Stop 82 Osprey Dr North East Side
+Stop 84G Griffiths Dr - South side
+Stop 86 Grand Blvd - South West side
+Stop 86 Grand Blvd - North East side
+Stop 87 Grand Blvd - South West side
+Stop 89 Grand Blvd - West side
+Stop 88B Dalkeith Rd - North side
+Stop 88B Dalkeith Rd - South side
+Stop 90 Grand Blvd - West side
+Stop 94 Commercial Rd - East side
+Stop 94 Commercial Rd - West side
+
+3)	Implemented Belair and Seaford train closures for 5-8 June 2026.
+
+4)	Implemented tram timetable updates for AFL Rounds 14, 16 and 22.
+
+
+
+Notice for Developers:
+
+We are planning on updating our GTFS feed on 2 June 2026.
+
+We will be adding a new booking_rules.txt file. The file will include the following fields. 
+
+booking_rule_id,booking_type,prior_notice_last_day,prior_notice_last_time,message
+
+Our stop_times.txt file will also be updated with the additional fields:
+
+pickup_booking_rule_id,drop_off_booking_rule_id
+
+This follows official GTFS specification. Please ensure your imports will be able to handle the new data.
