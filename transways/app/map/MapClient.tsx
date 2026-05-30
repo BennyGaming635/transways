@@ -85,6 +85,16 @@ export default function MapClient() {
       <div style={{ position: "absolute", zIndex: 1000, left: 8, top: 8, background: "white", padding: 8, borderRadius: 6 }}>
         <strong>Markers:</strong> {stops.length} {loading ? "(loading...)" : ""}
       </div>
+      {/* Debug list of stops (first 20) */}
+      <div style={{ position: "absolute", zIndex: 1000, right: 8, top: 8, background: "rgba(255,255,255,0.95)", padding: 8, borderRadius: 6, maxHeight: 300, overflow: "auto", width: 220 }}>
+        <div style={{ fontWeight: 600, marginBottom: 6 }}>Visible stops ({stops.length})</div>
+        <ul style={{ margin: 0, padding: 0, listStyle: "none", fontSize: 12 }}>
+          {stops.slice(0, 20).map((s) => (
+            <li key={s.id} style={{ marginBottom: 4 }}>{s.name}</li>
+          ))}
+          {stops.length > 20 && <li style={{ color: "#666" }}>...and {stops.length - 20} more</li>}
+        </ul>
+      </div>
       <MapContainer
         center={[-34.92, 138.6] as any}
         zoom={16}
