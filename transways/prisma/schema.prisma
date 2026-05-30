@@ -8,15 +8,11 @@ datasource db {
 }
 
 model Stop {
-  id          String @id
-  code        String?
-  name        String
-
-  latitude    Float
-  longitude   Float
-
-  /// Relationships
-  stopTimes   StopTime[]
+  id        String @id
+  code      String?
+  name      String
+  latitude  Float
+  longitude Float
 }
 
 model Route {
