@@ -47,7 +47,6 @@ model StopTime {
   stopSequence    Int
 
   trip            Trip @relation(fields: [tripId], references: [id])
-  stop            Stop @relation(fields: [stopId], references: [id])
 
   @@index([stopId])
   @@index([tripId])
