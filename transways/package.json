@@ -9,5 +9,8 @@
   "devDependencies": {
     "@types/node": "^25.9.1",
     "prisma": "^6.19.3"
+  },
+  "scripts": {
+    "import:stops": "tsx scripts/importStops.ts"
   }
 }
