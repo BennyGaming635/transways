@@ -9,8 +9,10 @@
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
+    "@types/react": "19.2.15",
     "prisma": "^6.19.3",
-    "tsx": "^4.22.3"
+    "tsx": "^4.22.3",
+    "typescript": "6.0.3"
   },
   "scripts": {
     "import:stops": "tsx scripts/importStops.ts",
