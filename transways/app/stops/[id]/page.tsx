@@ -15,7 +15,6 @@ export default async function StopPage({
     <div style={{ padding: 24 }}>
       <h1>{stop.name}</h1>
 
-      <p>Code: {stop.code || "N/A"}</p>
       <p>Lat: {stop.latitude}</p>
       <p>Lon: {stop.longitude}</p>
 
