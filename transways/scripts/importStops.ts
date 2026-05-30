@@ -43,12 +43,18 @@ async function importStops() {
 
   const BATCH_SIZE = 1000;
 
+  const existingRows = await prisma.stop.findMany({ select: { id: true } });
+  const existingIds = new Set(existingRows.map((r) => r.id));
+
   for (let i = 0; i < formatted.length; i += BATCH_SIZE) {
     const batch = formatted.slice(i, i + BATCH_SIZE);
 
-    await prisma.stop.createMany({
-      data: batch,
-    });
+    const toInsert = batch.filter((s) => !existingIds.has(s.id));
+
+    if (toInsert.length > 0) {
+      await prisma.stop.createMany({ data: toInsert });
+      toInsert.forEach((s) => existingIds.add(s.id));
+    }
 
     console.log(
       `Inserted ${Math.min(i + BATCH_SIZE, formatted.length)} / ${formatted.length}`
