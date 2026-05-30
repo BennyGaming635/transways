@@ -10,44 +10,57 @@ type GTFSStop = {
   stop_lon: string;
 };
 
+function readStops(): Promise<GTFSStop[]> {
+  return new Promise((resolve, reject) => {
+    const stops: GTFSStop[] = [];
+
+    fs.createReadStream("gtfs/stops.txt")
+      .pipe(csv())
+      .on("data", (row) => {
+        stops.push(row);
+      })
+      .on("end", () => resolve(stops))
+      .on("error", reject);
+  });
+}
+
 async function importStops() {
   console.log("Reading GTFS stops.txt...");
 
-  const stops: GTFSStop[] = [];
+  const stops = await readStops();
 
-  fs.createReadStream("gtfs/stops.txt")
-    .pipe(csv())
-    .on("data", (row) => {
-      stops.push(row);
-    })
-    .on("end", async () => {
-      console.log(`Loaded ${stops.length} stops from file`);
+  console.log(`Loaded ${stops.length} stops`);
 
-      console.log("Transforming data...");
+  const formatted = stops.map((stop) => ({
+    id: stop.stop_id,
+    code: stop.stop_code || null,
+    name: stop.stop_name,
+    latitude: Number(stop.stop_lat),
+    longitude: Number(stop.stop_lon),
+  }));
 
-      const formatted = stops.map((stop) => ({
-        id: stop.stop_id,
-        code: stop.stop_code || null,
-        name: stop.stop_name,
-        latitude: Number(stop.stop_lat),
-        longitude: Number(stop.stop_lon),
-      }));
+  console.log("Importing into database...");
 
-      console.log("Writing to database (fast batch insert)...");
+  const BATCH_SIZE = 1000;
 
-      try {
-        await prisma.stop.createMany({
-          data: formatted,
-          skipDuplicates: true as any,
-        } as any);
+  for (let i = 0; i < formatted.length; i += BATCH_SIZE) {
+    const batch = formatted.slice(i, i + BATCH_SIZE);
 
-        console.log("Stops import complete.");
-      } catch (err) {
-        console.error("Import failed:", err);
-      } finally {
-        await prisma.$disconnect();
-      }
+    await prisma.stop.createMany({
+      data: batch,
     });
+
+    console.log(
+      `Inserted ${Math.min(i + BATCH_SIZE, formatted.length)} / ${formatted.length}`
+    );
+  }
+
+  console.log("Stops import complete.");
+
+  await prisma.$disconnect();
 }
 
-importStops();
+importStops().catch((err) => {
+  console.error("Import failed:", err);
+  process.exit(1);
+});
