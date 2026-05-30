@@ -8,8 +8,95 @@ datasource db {
 }
 
 model Stop {
-  id        String @id
-  name      String
-  latitude  Float
-  longitude Float
+  id          String @id
+  code        String?
+  name        String
+
+  latitude    Float
+  longitude   Float
+
+  /// Relationships
+  stopTimes   StopTime[]
+}
+
+model Route {
+  id          String @id
+  shortName   String?
+  longName    String?
+  type        Int
+
+  trips       Trip[]
+}
+
+model Trip {
+  id          String @id
+
+  routeId     String
+  route       Route @relation(fields: [routeId], references: [id])
+
+  headsign    String?
+  directionId Int?
+
+  stopTimes   StopTime[]
+}
+
+model StopTime {
+  id              Int @id @default(autoincrement())
+
+  tripId          String
+  stopId          String
+
+  arrivalTime     String
+  departureTime   String
+  stopSequence    Int
+
+  trip            Trip @relation(fields: [tripId], references: [id])
+  stop            Stop @relation(fields: [stopId], references: [id])
+
+  @@index([stopId])
+  @@index([tripId])
+}
+
+model Vehicle {
+  id          String @id
+
+  routeId     String?
+  tripId      String?
+
+  latitude    Float
+  longitude   Float
+
+  bearing     Float?
+  speed       Float?
+
+  timestamp   DateTime?
+}
+
+model ServiceAlert {
+  id          String @id
+
+  title       String
+  description String
+
+  severity    String?
+  createdAt   DateTime @default(now())
+}
+
+model FavouriteStop {
+  id        Int @id @default(autoincrement())
+
+  stopId    String
+  label     String?
+
+  createdAt DateTime @default(now())
+}
+
+model JourneyHistory {
+  id          Int @id @default(autoincrement())
+
+  fromStopId  String
+  toStopId    String
+
+  durationMin Int?
+  createdAt   DateTime @default(now())
 }
