@@ -9,6 +9,7 @@ export default function MapClient() {
   const [stops, setStops] = useState<any[]>([]);
   const [mapInstance, setMapInstance] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
+  const [bounds, setBounds] = useState<any>(null);
 
   // Leaflet icon setup must run client-side only
   useEffect(() => {
@@ -31,9 +32,12 @@ export default function MapClient() {
   // Fetch stops for the current map bounds
   const fetchStopsForBounds = (map: any) => {
     if (!map) return;
-    const bounds = map.getBounds();
-    const sw = bounds.getSouthWest();
-    const ne = bounds.getNorthEast();
+
+    const b = map.getBounds();
+    const sw = b.getSouthWest();
+    const ne = b.getNorthEast();
+
+    setBounds(b);
 
     const params = new URLSearchParams({
       minLat: String(sw.lat),
@@ -42,24 +46,12 @@ export default function MapClient() {
       maxLng: String(ne.lng),
     });
 
-    console.log("Fetching stops for bounds:", {
-      minLat: sw.lat,
-      minLng: sw.lng,
-      maxLat: ne.lat,
-      maxLng: ne.lng,
-    });
-
     setLoading(true);
 
     fetch(`/api/stops?${params.toString()}`)
       .then((res) => res.json())
-      .then((data) => {
-        console.log("Received stops count:", Array.isArray(data) ? data.length : 0);
-        setStops(data);
-      })
-      .catch((e) => {
-        console.error("Failed to fetch stops for bounds", e);
-      })
+      .then((data) => setStops(data))
+      .catch((e) => console.error(e))
       .finally(() => setLoading(false));
   };
 
@@ -97,9 +89,11 @@ export default function MapClient() {
       </div>
       <MapContainer
         center={[-34.92, 138.6] as any}
-        zoom={16}
+        zoom={12}
+        minZoom={10}
+        maxZoom={18}
         style={{ height: "100%", width: "100%" }}
-        whenCreated={(map) => setMapInstance(map)}
+        whenReady={((map: any) => setMapInstance(map.target)) as any}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
