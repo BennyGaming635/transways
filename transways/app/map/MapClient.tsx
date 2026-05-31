@@ -56,21 +56,28 @@ export default function MapClient() {
   };
 
   useEffect(() => {
-    if (!mapInstance) return;
+  if (!mapInstance) return;
 
-    // initial load
-    fetchStopsForBounds(mapInstance);
+  fetchStopsForBounds(mapInstance);
 
-    const onMoveEnd = () => fetchStopsForBounds(mapInstance);
+  let timeout: any;
 
-    mapInstance.on("moveend", onMoveEnd);
-    mapInstance.on("zoomend", onMoveEnd);
+  const onMoveEnd = () => {
+    clearTimeout(timeout);
 
-    return () => {
-      mapInstance.off("moveend", onMoveEnd);
-      mapInstance.off("zoomend", onMoveEnd);
-    };
-  }, [mapInstance]);
+    timeout = setTimeout(() => {
+      fetchStopsForBounds(mapInstance);
+    }, 200);
+  };
+
+  mapInstance.on("moveend", onMoveEnd);
+  mapInstance.on("zoomend", onMoveEnd);
+
+  return () => {
+    mapInstance.off("moveend", onMoveEnd);
+    mapInstance.off("zoomend", onMoveEnd);
+  };
+}, [mapInstance]);
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>
