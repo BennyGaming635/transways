@@ -89,9 +89,9 @@ export default function MapClient() {
       </div>
       <MapContainer
         center={[-34.92, 138.6] as any}
-        zoom={5}
-        minZoom={2}
-        maxZoom={18}
+        zoom={15}
+        minZoom={10}
+        maxZoom={17}
         style={{ height: "100%", width: "100%" }}
         whenReady={((map: any) => setMapInstance(map.target)) as any}
       >
