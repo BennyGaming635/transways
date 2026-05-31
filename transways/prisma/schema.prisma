@@ -13,6 +13,8 @@ model Stop {
   name      String
   latitude  Float
   longitude Float
+
+  stopTimes StopTime[]
 }
 
 model Route {
@@ -37,16 +39,17 @@ model Trip {
 }
 
 model StopTime {
-  id              Int @id @default(autoincrement())
+  id            Int @id @default(autoincrement())
 
-  tripId          String
-  stopId          String
+  tripId        String
+  stopId        String
 
-  arrivalTime     String
-  departureTime   String
-  stopSequence    Int
+  arrivalTime   String
+  departureTime String
+  stopSequence  Int
 
-  trip            Trip @relation(fields: [tripId], references: [id])
+  trip          Trip @relation(fields: [tripId], references: [id])
+  stop          Stop @relation(fields: [stopId], references: [id])
 
   @@index([stopId])
   @@index([tripId])
